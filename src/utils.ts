@@ -20,6 +20,12 @@ export const uniqueName = (used: Set<string>): string => {
 export const sessionId = () =>
   `luna-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
+export const uniqueGroupName = (used: Set<string>): string => {
+  let i = 1;
+  while (used.has(`Constellation ${i}`)) i++;
+  return `Constellation ${i}`;
+};
+
 export const formatCreated = (sec: number): string => {
   const d = new Date(sec * 1000);
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;

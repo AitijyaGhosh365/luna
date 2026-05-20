@@ -14,7 +14,7 @@ export const Banner = memo(() => (
     </Box>
     <Text> </Text>
     <Box  alignSelf="center">
-      <Text color={COLOR.active}>{TAGLINE}</Text>
+      <Text color={COLOR.yellow}>☽ </Text><Text color={COLOR.active}>{TAGLINE}</Text><Text color={COLOR.yellow}> ☾</Text>
     </Box>
   </Box>
 ));

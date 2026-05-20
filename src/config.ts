@@ -6,6 +6,7 @@ export const COLOR = {
   fresh: '#6b7280',
   alive: '#10b981',
   dead: '#ef4444',
+  yellow : '#dbe273',
 };
 
 export const BANNER = [
@@ -15,7 +16,7 @@ export const BANNER = [
   
 ];
 
-export const TAGLINE = '✦  persistent terminal sessions  ✦';
+export const TAGLINE = 'persistent terminal sessions';
 
 export const SPACE_WORDS = [
   'altair', 'antares', 'betelgeuse', 'rigel', 'sirius',
