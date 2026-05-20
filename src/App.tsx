@@ -34,7 +34,7 @@ import { PreviewPane } from './components/PreviewPane';
 export const App: React.FC = () => {
   const { exit } = useApp();
   const [items, setItems] = useState<Item[]>(() =>
-    pickRandom(5).map((name) => ({
+    pickRandom(3).map((name) => ({
       kind: 'slot' as const,
       name,
       session: sessionId(),
