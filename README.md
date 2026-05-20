@@ -1,3 +1,5 @@
+<div align="center">
+
 # 🌙 luna
 
 ```
@@ -9,88 +11,139 @@
 ╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝
 ```
 
-A purple-themed terminal multiplexer launcher. Each "slot" is a persistent
-tmux session that you can pop into in a floating window and detach from
-without losing state. The slot list lives on the left; a live info card + a
-sliding-window preview of the most recent output lives on the right.
+### **The simplest terminal multiplexer.**
+### *tmux power, zero tmux pain.*
 
-Built on **Bun + React + Ink + tmux**.
+</div>
 
-## Requirements
+---
 
-- **bash** + **tmux** (3.2+ recommended, for `display-popup`)
-- **Bun** (≥ 1.0)
-- A terminal. Runs best on native Linux/macOS. Inside WSL it works
-  functionally but Ink's render diff can flicker on top of WSL's pty layer —
-  see the troubleshooting section below.
+luna gives you persistent terminal sessions in a clean, navigable launcher. Open one. Do your work. Press `Esc` to detach. Come back tomorrow — everything's exactly where you left it.
+
+**No prefix keys. No chord shortcuts. No manual.** Arrows and Enter cover 90% of what you need.
+
+---
+
+## Why luna?
+
+tmux is the most powerful terminal multiplexer ever built. Its keybindings are also why most people never touch it.
+
+luna is the friendly face: a single-screen launcher that wraps tmux's machinery in a UI you can use **without ever reading the tmux manual**.
+
+| | tmux raw | luna |
+| --- | --- | --- |
+| Open a new session | `tmux new -s foo` | press `a` |
+| Switch sessions | `Ctrl+B s` then arrows | arrow keys |
+| Detach a session | `Ctrl+B d` | `Esc` |
+| See what's running in another session | attach to it and look | live preview on the right |
+| Find session #47 | `tmux ls`, eye-search | type `4+7` |
+| Rename | `Ctrl+B $` | press `r`, type name |
+
+All sessions live on an isolated `tmux -L luna` socket, so luna won't touch your existing tmux setup.
+
+---
+
+## Features
+
+- 🎯 **Zero learning curve** — arrows + Enter, that's the whole UX
+- 💾 **Real persistence** — sessions survive disconnects, crashes, reboots
+- 👁️ **Live previews** — see each session's last lines + cwd + foreground command without opening it
+- 🏷️ **Custom names** — rename slots to `api`, `logs`, `deploy`, whatever
+- ➕ **Unlimited sessions** — type `1+8+0` to jump to slot 180 instantly
+- 🟢 **Status at a glance** — green dot = running, red = died, grey = never opened
+- 🎨 **Beautiful by default** — purple palette, ASCII banner, soft rounded borders
+- 🛡️ **Clean detach** — `Esc` leaves the session running, `exit` destroys it
+- ⚙️ **Hackable** — every tmux command lives in one editable JSON file
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/yourname/luna
+cd luna
+bun install
+```
+
+Requirements:
+- [**Bun**](https://bun.sh) ≥ 1.0
+- **tmux** ≥ 3.2 (for `display-popup`)
+- **bash**
+
+Runs natively on Linux and macOS. On WSL it works fully — Ink can flicker on Windows Terminal; see [troubleshooting](#troubleshooting).
+
+---
 
 ## Run
 
 ```bash
-bun install
-bun start                # wraps the app in an outer tmux session
-# or
-bun run src/index.tsx    # raw, no outer tmux wrapper
+bun start
 ```
 
-`bun start` calls `bin/start.sh`, which spawns/attaches a tmux session named
-`luna` and boots the Ink app inside it. The outer tmux is what makes
-`tmux display-popup` work for slot popups.
+That's it. You're in.
+
+---
 
 ## Controls
 
+### Navigating
+
 | Key | Action |
-| --- | --- |
-| `↑` `↓` | Navigate slot list |
+| :-: | --- |
+| `↑` `↓` | Move selection |
 | `1`–`9` | Jump to slot 1–9 |
-| `1` `+` `2` (etc.) | Multi-digit jump — `+` extends the current number, e.g. `1+8+0` jumps to slot 180 |
-| `↵` | Open the focused slot's session in a floating popup |
+| `1+2+3` | Jump to slot 123 (`+` extends the number) |
+| `↵` | Open the focused slot |
+
+### Managing slots
+
+| Key | Action |
+| :-: | --- |
 | `a` | Add a new slot |
-| `r` | Rename the focused slot (type new name, `↵` to apply, `Esc` to cancel) |
-| `Esc` *(inside popup)* | Detach from session — popup closes, session persists |
-| `exit` / `⌃D` *(inside popup)* | Destroy the session (slot turns red) |
+| `r` | Rename the focused slot (`↵` to apply, `Esc` to cancel) |
 | `⌃C` | Quit luna |
+
+### Inside a session popup
+
+| Key | Action |
+| :-: | --- |
+| `Esc` | Detach (session keeps running, popup closes) |
+| `exit` / `⌃D` | Destroy the session |
+| `⌃B` `[` | tmux copy mode (scroll back through history) |
+
+---
 
 ## Slot status
 
-Each slot row has a colored dot:
+Every slot has a colored dot telling you what it is:
 
-- ⚪ **grey** — `fresh`, never opened
-- 🟢 **green** — `alive`, session running and reattachable
-- 🔴 **red** — `dead`, session was destroyed (you `exit`-ed instead of detaching)
+| Dot | State | Meaning |
+| :-: | --- | --- |
+| ⚪ | `fresh` | Never opened |
+| 🟢 | `alive` | Running, ready to reattach |
+| 🔴 | `dead` | Was opened, then destroyed |
 
-To get fresh state on a dead slot, just hit `↵` again — luna creates a new
-session on the slot's stable id and the status returns to alive.
+To bring a `dead` slot back, just press `↵` again — luna spins up a new session on the slot's stable id.
 
-## Project layout
+---
 
-```
-src/
-  index.tsx          entry point — renders <App />
-  App.tsx            main component, input handling, layout
-  config.ts          colors, banner, name pool, polling intervals
-  types.ts           shared types (Slot, Status, Info, Snapshot)
-  tmux.ts            tmux subprocess helpers + dedup comparators
-  utils.ts           formatting, random name generation
-  components/
-    Banner.tsx       memoized ASCII logo
-    SlotRow.tsx      memoized single slot row
-    InfoCard.tsx     memoized right-pane info section
-    PreviewPane.tsx  memoized live preview of the focused session
-tmux-commands.json   tmux command templates with {{session}} placeholders
-bin/start.sh         launcher that wraps luna in an outer tmux session
-```
+## How it works
 
-Everything renders inside the dynamic area; `Banner` is memoized so it
-doesn't participate in re-renders. `SlotRow`, `InfoCard`, and `PreviewPane`
-are memoized with referentially stable props so Ink's per-row diff stays
-minimal.
+Every slot is mapped to a stable tmux session id like `luna-mabc-xyz`. When you hit `↵`:
+
+1. luna ensures the session exists (creates if missing) on the `-L luna` socket
+2. tmux `display-popup` opens, attaching to that session
+3. You work; the popup is just tmux
+4. `Esc` detaches → popup closes → session continues running
+5. Back in luna, a poll every second updates the info card + preview from `tmux capture-pane`
+
+luna never holds your shells hostage. It's a thin overlay on top of real tmux sessions you could also drive with `tmux -L luna attach -t <id>` directly.
+
+---
 
 ## Customizing tmux behavior
 
-All tmux commands live in **`tmux-commands.json`**. Each entry is a shell
-command run by luna when opening a slot. Use `{{session}}` as the slot's
-stable session id placeholder. The default file:
+Every tmux command luna runs lives in **[`tmux-commands.json`](./tmux-commands.json)**:
 
 ```json
 {
@@ -104,53 +157,63 @@ stable session id placeholder. The default file:
 }
 ```
 
-Notes:
+Tweak the popup size, change the detach key, add hooks, set environment variables — it's just shell commands. `{{session}}` gets replaced with the slot's session id at runtime.
 
-- The `-L luna` socket isolates luna's tmux state from your default tmux
-  server. Sessions show up only via `tmux -L luna ls`.
-- `history-limit 50000` is set **before** session creation because tmux only
-  applies the limit to new windows.
-- The `escape-time 10` + `bind-key -T root Escape detach-client` combo means
-  pressing `Esc` inside a popup detaches you (session persists). Without
-  this, you'd need the prefix-prefix trick.
+---
 
-Tweak this file freely — bump popup geometry, change keybindings, add more
-setup commands. Restart luna for changes to take effect.
+## Project layout
+
+```
+src/
+  index.tsx          entry — renders <App />
+  App.tsx            main component: state, input, layout
+  config.ts          colors, banner, name pool, intervals
+  types.ts           Slot, Status, Info, Snapshot
+  tmux.ts            subprocess helpers + state dedup
+  utils.ts           formatting, random naming
+  components/
+    Banner.tsx       memoized ASCII logo
+    SlotRow.tsx      memoized list row
+    InfoCard.tsx     memoized right-pane info
+    PreviewPane.tsx  memoized live tail
+tmux-commands.json   tmux command templates
+bin/start.sh         launcher (wraps luna in outer tmux)
+```
+
+Built on **Bun + React + Ink + tmux**.
+
+---
 
 ## Troubleshooting
 
 ### Flicker on WSL
 
-Ink does clear-and-redraw of the dynamic area on every state change. On
-native Linux/macOS this is fast enough to look smooth; on WSL the
-escape-sequence path through `WSL pty → Windows Terminal` adds latency that
-makes the redraws visible.
+Ink does clear-and-redraw of the dynamic area on every state change. On Linux/macOS it's invisible; on WSL the `WSL pty → Windows Terminal` rendering path makes it visible.
 
-Mitigations, lightest to heaviest:
+In order of effort, lightest to heaviest:
 
-1. **Different terminal emulator** — WezTerm and Alacritty handle escape
-   sequences much better than Windows Terminal for full-screen TUIs.
-2. **SSH from native Windows into WSL** — bypasses the WSL pty rendering
-   pipeline. Set up `openssh-server` in WSL, then from PowerShell:
-   `ssh -t -i ~/.ssh/wsl_key wsluser@localhost "cd /path/to/luna && bun start"`.
-3. **Run on native Linux/macOS** — no Ink-on-WSL friction at all.
+1. **Use WezTerm or Alacritty** instead of Windows Terminal — they handle escape sequences much better.
+2. **SSH into WSL** from a native Windows terminal — bypasses the WSL pty layer entirely.
+3. **Use native Linux/macOS** — completely smooth.
 
-### Sessions don't persist between luna runs
+### Old sessions don't come back when I restart luna
 
-By default, luna generates a fresh `session` id per slot on every launch,
-so previous sessions on the `luna` tmux socket are orphaned. They still
-exist (try `tmux -L luna ls`) but aren't tied to any slot in the current
-luna run. If you want cross-run persistence, persist the slot list to disk
-and reuse session ids on next launch.
+By design — each luna launch generates fresh session ids. The old sessions still exist on the `luna` tmux socket (`tmux -L luna ls` to see them), they're just orphaned. Persistence across luna restarts is a small change to the slot init if you want it.
 
-### Buffer cuts off when scrolling-by-tail
+### I can't scroll back through old output
 
-luna shows the **last N lines** of each session's tmux buffer (sliding
-window — older lines disappear off the top as new ones arrive). To see
-older history, open the popup and use tmux's copy mode: `Ctrl+B [`, then
-arrow keys or `Page Up`. luna doesn't intercept scroll keys to keep the
-input model simple.
+The preview shows only the latest lines (sliding tail window). To browse history, open the popup and use tmux's copy mode: `Ctrl+B [`, then arrow keys / `PgUp` / `q` to exit. Full tmux scrollback (`history-limit 50000`) is available there.
+
+---
 
 ## License
 
 MIT.
+
+---
+
+<div align="center">
+
+*made with 🌙 and tmux*
+
+</div>
