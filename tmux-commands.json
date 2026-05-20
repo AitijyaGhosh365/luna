@@ -1,0 +1,9 @@
+{
+  "commands": [
+    "tmux -L luna has-session -t {{session}} 2>/dev/null || tmux -L luna set-option -g history-limit 50000 \\; new-session -d -s {{session}} \\; set-option status off",
+    "tmux -L luna set-option -g status off",
+    "tmux -L luna set-option -g escape-time 10",
+    "tmux -L luna bind-key -T root Escape detach-client",
+    "tmux display-popup -w 95% -h 80% -E 'TMUX= tmux -L luna attach -t {{session}}'"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "luna",
+  "version": "1.0.0",
+  "type": "module",
+  "module": "src/index.tsx",
+  "scripts": {
+    "start": "./bin/start.sh",
+    "dev": "bun --watch src/index.tsx",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "dependencies": {
+    "ink": "^5.0.1",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^18.3.5",
+    "typescript": "^5.5.4"
+  }
+}
