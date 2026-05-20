@@ -1,14 +1,14 @@
-import { POOL } from './config';
+import { SPACE_WORDS } from './config';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
 export const pickRandom = (n: number): string[] => {
-  const shuffled = [...POOL].sort(() => Math.random() - 0.5);
+  const shuffled = [...SPACE_WORDS].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, n);
 };
 
 export const uniqueName = (used: Set<string>): string => {
-  const available = POOL.filter((n) => !used.has(n));
+  const available = SPACE_WORDS.filter((n) => !used.has(n));
   if (available.length > 0) {
     return available[Math.floor(Math.random() * available.length)]!;
   }

@@ -15,9 +15,17 @@ export type InfoCardProps = {
 
 export const InfoCard = memo<InfoCardProps>(
   ({ focusedName, focusedStatus, dotColor, info, cwdWidth, borderColor }) => (
-    <Box flexDirection="column" borderStyle="round" borderColor={borderColor} paddingX={2}>
+    <Box
+      flexDirection="column"
+      borderStyle="round"
+      borderColor={borderColor}
+      paddingX={2}
+      height={7}
+      flexShrink={0}
+      overflow="hidden"
+    >
       <Box>
-        <Text color={COLOR.title} bold>{focusedName}</Text>
+        <Text color={COLOR.title} bold wrap="truncate">{focusedName}</Text>
         <Text color={COLOR.dim}>  </Text>
         <Text color={dotColor}>● </Text>
         <Text color={COLOR.dim}>{focusedStatus}</Text>
@@ -26,15 +34,15 @@ export const InfoCard = memo<InfoCardProps>(
         <Box flexDirection="column" marginTop={1}>
           <Box>
             <Text color={COLOR.dim}>cwd      </Text>
-            <Text>{shortPath(info.cwd, cwdWidth)}</Text>
+            <Text wrap="truncate">{shortPath(info.cwd, cwdWidth)}</Text>
           </Box>
           <Box>
             <Text color={COLOR.dim}>cmd      </Text>
-            <Text>{info.cmd}</Text>
+            <Text wrap="truncate">{info.cmd}</Text>
           </Box>
           <Box>
             <Text color={COLOR.dim}>created  </Text>
-            <Text>{formatCreated(info.created)}</Text>
+            <Text wrap="truncate">{formatCreated(info.created)}</Text>
           </Box>
         </Box>
       ) : (

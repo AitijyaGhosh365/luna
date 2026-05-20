@@ -3,14 +3,18 @@ import { Box, Text } from 'ink';
 import { BANNER, COLOR, TAGLINE } from '../config';
 
 export const Banner = memo(() => (
-  <Box flexDirection="column" alignSelf="center">
+  <Box height={4} flexDirection="column">
+    <Box flexDirection="column" alignItems='center' justifyContent='center' >
+
     {BANNER.map((line, i) => (
       <Text key={i} color={COLOR.title} bold>
         {line}
       </Text>
     ))}
-    <Box marginTop={1} alignSelf="center">
-      <Text color={COLOR.dim}>{TAGLINE}</Text>
+    </Box>
+    <Text> </Text>
+    <Box  alignSelf="center">
+      <Text color={COLOR.active}>{TAGLINE}</Text>
     </Box>
   </Box>
 ));

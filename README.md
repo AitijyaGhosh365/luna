@@ -2,14 +2,9 @@
 
 # 🌙 luna
 
-```
-██╗     ██╗   ██╗███╗   ██╗ █████╗
-██║     ██║   ██║████╗  ██║██╔══██╗
-██║     ██║   ██║██╔██╗ ██║███████║
-██║     ██║   ██║██║╚██╗██║██╔══██║
-███████╗╚██████╔╝██║ ╚████║██║  ██║
-╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝
-```
+<code>║&nbsp;&nbsp;&nbsp;╦&nbsp;╦&nbsp;╔╗╔&nbsp;╔═╗</code><br>
+<code>║&nbsp;&nbsp;&nbsp;║&nbsp;║&nbsp;║║║&nbsp;╠═╣</code><br>
+<code>╚══&nbsp;╚═╝&nbsp;╝╚╝&nbsp;╩&nbsp;╩</code>
 
 ### **The simplest terminal multiplexer.**
 ### *tmux power, zero tmux pain.*

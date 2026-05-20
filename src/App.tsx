@@ -33,10 +33,10 @@ export const App: React.FC = () => {
 
   const focused = slots[selected]!;
   const cols = process.stdout.columns || 100;
-  const rows = process.stdout.rows || 30;
+  const rows = process.stdout.rows ;
   const paneInnerWidth = Math.max(20, Math.floor((cols - 6) / 2) - 4);
   const previewVisibleLines = Math.max(5, rows - 24);
-  const slotListMaxVisible = Math.max(3, rows - 20);
+  const slotListMaxVisible = Math.max(3, rows - 14);
 
   const slotWindowHalf = Math.floor(slotListMaxVisible / 2);
   let slotStart: number;
@@ -202,7 +202,7 @@ export const App: React.FC = () => {
         )}
       </Box>
 
-      <Box flexDirection="row" flexGrow={1} marginTop={1}>
+      <Box flexDirection="row" flexGrow={1} >
         <Box
           flexDirection="column"
           borderStyle="round"
