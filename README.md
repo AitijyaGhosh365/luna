@@ -1,6 +1,7 @@
 <div align="center">
 
-# 🌙 LUNA
+#    █   █ █ █▄ █ ▄▀█
+#    █▄▄ █▄█ █ ▀█ █▀█
 
 ### **The simplest terminal multiplexer.**
 
