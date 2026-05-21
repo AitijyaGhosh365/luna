@@ -68,17 +68,47 @@ Runs natively on Linux and macOS. On WSL it works fully — Ink can flicker on W
 
 ## Run
 
-### Linux / macOS / WSL
+### Recommended: `./luna` (works everywhere)
+
+From the project root in any bash environment — **Linux, macOS, WSL, or MSYS2**:
+
+```bash
+./luna                # default: session named "luna"
+./luna global         # start (or reattach) a session named "global"
+./luna work           # different named session, runs independently
+```
+
+`./luna <name>` is **create-or-reattach**:
+- If a tmux session by that name already exists → attach to it.
+- If not → create it (status bar off), launch luna inside, then attach.
+
+This lets you keep multiple luna instances on the same machine — each in its own named session, each with its own slot list/popups, all independent.
+
+To explicitly **reattach** to an existing session without risking creating a new one:
+
+```bash
+./luna attach global
+```
+
+To **nuke all popup sessions** that luna has accumulated on its `-L luna` socket (handy when too many dead/orphan popups pile up — `tmux ls` doesn't show them, since they live on a different socket):
+
+```bash
+./luna kill-all
+```
+
+This runs `tmux -L luna kill-server`, wiping every popup session in one shot. Your outer `luna` tmux session (the one running the luna UI) is untouched — only the per-slot popup sessions get cleared.
+
+### Alternative: `bun start` (Linux / macOS / WSL only)
 
 ```bash
 bun start
 ```
 
-That's it. You're in.
+This runs `bin/start.sh`, which has slightly more setup (LUNA_CWD env var, etc.). **Doesn't work reliably from MSYS2** due to a pty handoff issue — on Windows always use `./luna` instead.
 
-### Windows (via MSYS2)
+### Windows-specific setup (MSYS2)
 
-luna works on native Windows through **MSYS2**, which provides bash + tmux as Windows-native binaries. No WSL needed.
+luna runs on native Windows through **MSYS2**, which provides bash + tmux as Windows-native binaries — no WSL needed.
 
 **One-time setup:**
 
@@ -91,22 +121,23 @@ luna works on native Windows through **MSYS2**, which provides bash + tmux as Wi
    pacman -Syu
    pacman -S tmux
    ```
-3. Make Windows-side `bun` reachable from MSYS2 — add this to `~/.bashrc`:
+3. Make Windows-side `bun` reachable from MSYS2. Easiest is to inherit Windows PATH globally — in PowerShell:
+   ```powershell
+   [System.Environment]::SetEnvironmentVariable('MSYS2_PATH_TYPE', 'inherit', 'User')
+   ```
+   Close all MSYS2 windows, open a fresh one, verify with `bun --version`.
+
+   Alternatively, just add bun's directory in `~/.bashrc`:
    ```bash
    export PATH="/c/Users/YOUR_WINDOWS_USER/.bun/bin:$PATH"
    ```
-   Reload: `source ~/.bashrc`. Verify with `bun --version`.
 
-**Launching:**
-
-From the MSYS2 shell, navigate to the project and run the root-level launcher:
+Then from MSYS2:
 
 ```bash
-cd /d/Programming/Projects/luna
+cd /d/path/to/luna
 ./luna
 ```
-
-The `./luna` script is a one-liner that starts tmux and runs `bun run src/index.tsx` inside it — which is the only sequence that survives the MSYS2 pty handoff. `bun start` (which uses `bin/start.sh`) won't work reliably from MSYS2 due to pty quirks; stick with `./luna` on Windows.
 
 ---
 

@@ -1,5 +1,38 @@
 #!/bin/bash
-# MSYS2 launcher. Runs tmux (status bar off) and inside it: bun run src/index.tsx.
-# Usage from MSYS2:  ./luna
+# Cross-platform launcher (WSL / MSYS2 / Linux / macOS).
+# Each luna lives in a named tmux session.
+#
+# Usage:
+#   ./luna [name]              start or reattach session "name" (default: "luna")
+#   ./luna attach <name>       reattach to an existing session by name
+#   ./luna kill-all            wipe all luna popup sessions on the -L luna socket
 
-tmux set-option -g status off \; new-session "bun run src/index.tsx"
+# `./luna kill-all` — nuke all popup sessions
+if [ "$1" = "kill-all" ]; then
+  if tmux -L luna kill-server 2>/dev/null; then
+    echo "All luna popup sessions killed."
+  else
+    echo "No luna popup sessions were running."
+  fi
+  exit 0
+fi
+
+# `./luna attach NAME` — just reattach, don't create
+if [ "$1" = "attach" ]; then
+  if [ -z "$2" ]; then
+    echo "Usage: ./luna attach <session-name>"
+    exit 1
+  fi
+  exec tmux attach -t "$2"
+fi
+
+SESSION_NAME="${1:-luna}"
+
+if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+  exec tmux attach -t "$SESSION_NAME"
+else
+  # Create session detached, configure, then attach.
+  tmux new-session -d -s "$SESSION_NAME" -c "$(pwd)" "bun run src/index.tsx"
+  tmux set-option -t "$SESSION_NAME" status off
+  exec tmux attach -t "$SESSION_NAME"
+fi

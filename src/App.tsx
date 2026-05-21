@@ -137,6 +137,14 @@ export const App: React.FC = () => {
       return;
     }
 
+    if (key.ctrl && input === 'd') {
+      Bun.spawn({
+        cmd: ['tmux', 'detach-client'],
+        stdout: 'ignore',
+        stderr: 'ignore',
+      });
+      return;
+    }
     if (key.ctrl && input === 'c') return exit();
     if (input === 'G' || input === 'z' || input === '-') {
       setItems((curr) => collapseAll(curr));
@@ -298,7 +306,7 @@ export const App: React.FC = () => {
       <Banner />
       <Box alignSelf="center" marginTop={1}>
         <Text color={COLOR.dim}>
-          ↑↓ nav  ·  digits jump  ·  ↵ open/collapse  ·  a add  ·  g group  ·  z collapse all  ·  m move  ·  r rename  ·  x delete  ·  ⌃C quit
+          ↑↓ nav  ·  digits jump  ·  ↵ open/collapse  ·  a add  ·  g group  ·  z collapse all  ·  m move  ·  r rename  ·  x delete  ·  ⌃D detach  ·  ⌃C quit
         </Text>
       </Box>
       <Box alignSelf="center" minHeight={1}>
