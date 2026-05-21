@@ -1,13 +1,10 @@
 <div align="center">
 
-# 🌙 luna
-
-<code>║&nbsp;&nbsp;&nbsp;╦&nbsp;╦&nbsp;╔╗╔&nbsp;╔═╗</code><br>
-<code>║&nbsp;&nbsp;&nbsp;║&nbsp;║&nbsp;║║║&nbsp;╠═╣</code><br>
-<code>╚══&nbsp;╚═╝&nbsp;╝╚╝&nbsp;╩&nbsp;╩</code>
+# 🌙 LUNA
 
 ### **The simplest terminal multiplexer.**
-### *tmux power, zero tmux pain.*
+
+*tmux power, zero tmux pain.*
 
 </div>
 
@@ -71,11 +68,45 @@ Runs natively on Linux and macOS. On WSL it works fully — Ink can flicker on W
 
 ## Run
 
+### Linux / macOS / WSL
+
 ```bash
 bun start
 ```
 
 That's it. You're in.
+
+### Windows (via MSYS2)
+
+luna works on native Windows through **MSYS2**, which provides bash + tmux as Windows-native binaries. No WSL needed.
+
+**One-time setup:**
+
+1. Install MSYS2:
+   ```powershell
+   winget install MSYS2.MSYS2
+   ```
+2. Open the **MSYS2** shell (Start menu → "MSYS2 MSYS"), then install tmux:
+   ```bash
+   pacman -Syu
+   pacman -S tmux
+   ```
+3. Make Windows-side `bun` reachable from MSYS2 — add this to `~/.bashrc`:
+   ```bash
+   export PATH="/c/Users/YOUR_WINDOWS_USER/.bun/bin:$PATH"
+   ```
+   Reload: `source ~/.bashrc`. Verify with `bun --version`.
+
+**Launching:**
+
+From the MSYS2 shell, navigate to the project and run the root-level launcher:
+
+```bash
+cd /d/Programming/Projects/luna
+./luna
+```
+
+The `./luna` script is a one-liner that starts tmux and runs `bun run src/index.tsx` inside it — which is the only sequence that survives the MSYS2 pty handoff. `bun start` (which uses `bin/start.sh`) won't work reliably from MSYS2 due to pty quirks; stick with `./luna` on Windows.
 
 ---
 

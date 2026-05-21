@@ -1,0 +1,5 @@
+#!/bin/bash
+# MSYS2 launcher. Runs tmux, and inside that, bun run src/index.tsx.
+# Usage from MSYS2:  ./luna
+
+tmux new-session "bun run src/index.tsx"
