@@ -1,14 +1,23 @@
 <div align="center">
 
-<img src="docs/hero.png" alt="luna — persistent terminal sessions" width="100%" />
+<pre>
+█   █ █ █▄ █ ▄▀█
+█▄▄ █▄█ █ ▀█ █▀█
+</pre>
 
 ### **The simplest terminal multiplexer.**
 
-*tmux power, zero tmux pain.*
+<img src="docs/hero.png" alt="luna — persistent terminal sessions" width="100%" />
 
 </div>
 
 ---
+
+<div align="center">
+
+*tmux power, zero tmux pain.*
+
+</div>
 
 luna gives you persistent terminal sessions in a clean, navigable launcher. Open one. Do your work. Press `Esc` to detach. Come back tomorrow — everything's exactly where you left it.
 
