@@ -1,6 +1,6 @@
 <div align="center">
 
-<samp>█&nbsp;&nbsp;&nbsp;█&nbsp;█&nbsp;█▄&nbsp;█&nbsp;▄▀█</samp><br>
+<samp>█&nbsp;&nbsp;&nbsp;█&nbsp;█&nbsp;█▄&nbsp;█&nbsp;▄▀█</samp>
 <samp>█▄▄&nbsp;█▄█&nbsp;█&nbsp;▀█&nbsp;█▀█</samp>
 
 ### **The simplest terminal multiplexer.**
