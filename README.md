@@ -1,9 +1,6 @@
 <div align="center">
 
-<pre>
-█   █ █ █▄ █ ▄▀█
-█▄▄ █▄█ █ ▀█ █▀█
-</pre>
+<img src="docs/hero.png" alt="luna — persistent terminal sessions" width="100%" />
 
 ### **The simplest terminal multiplexer.**
 
