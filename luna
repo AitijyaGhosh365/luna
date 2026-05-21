@@ -1,5 +1,5 @@
 #!/bin/bash
-# MSYS2 launcher. Runs tmux, and inside that, bun run src/index.tsx.
+# MSYS2 launcher. Runs tmux (status bar off) and inside it: bun run src/index.tsx.
 # Usage from MSYS2:  ./luna
 
-tmux new-session "bun run src/index.tsx"
+tmux set-option -g status off \; new-session "bun run src/index.tsx"
