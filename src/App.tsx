@@ -49,6 +49,7 @@ export const App: React.FC = () => {
   const [digitBuffer, setDigitBuffer] = useState<number | null>(null);
   const [awaitingDigit, setAwaitingDigit] = useState(false);
   const [moveMode, setMoveMode] = useState(false);
+  const [renameSelected, setRenameSelected] = useState(false);
 
   const flat = flatten(items);
   const focusedEntry = flat[Math.min(selected, flat.length - 1)] ?? flat[0]!;
@@ -116,7 +117,11 @@ export const App: React.FC = () => {
     if (busy) return;
 
     if (renameInput !== null) {
-      if (key.escape) return setRenameInput(null);
+      if (key.escape) {
+        setRenameInput(null);
+        setRenameSelected(false);
+        return;
+      }
       if (key.return) {
         const trimmed = renameInput.trim();
         if (trimmed) {
@@ -125,14 +130,25 @@ export const App: React.FC = () => {
           );
         }
         setRenameInput(null);
+        setRenameSelected(false);
         return;
       }
       if (key.backspace || key.delete) {
-        setRenameInput((s) => (s ?? '').slice(0, -1));
+        if (renameSelected) {
+          setRenameInput('');
+          setRenameSelected(false);
+        } else {
+          setRenameInput((s) => (s ?? '').slice(0, -1));
+        }
         return;
       }
       if (input && !key.ctrl && !key.meta) {
-        setRenameInput((s) => (s ?? '') + input);
+        if (renameSelected) {
+          setRenameInput(input);
+          setRenameSelected(false);
+        } else {
+          setRenameInput((s) => (s ?? '') + input);
+        }
       }
       return;
     }
@@ -224,6 +240,7 @@ export const App: React.FC = () => {
           ? focusedEntry.slot.name
           : focusedEntry.group.name;
       setRenameInput(name);
+      setRenameSelected(true);
       return;
     }
     if (input === 'm') {
@@ -340,6 +357,7 @@ export const App: React.FC = () => {
             const i = slotStart + idx;
             const active = i === selected;
             const rv = active && renameInput !== null ? renameInput : null;
+            const rs = active && renameInput !== null && renameSelected;
             if (entry.kind === 'group') {
               return (
                 <GroupRow
@@ -349,6 +367,7 @@ export const App: React.FC = () => {
                   active={active}
                   moveMode={active && moveMode}
                   renameValue={rv}
+                  renameSelected={rs}
                 />
               );
             }
@@ -361,6 +380,7 @@ export const App: React.FC = () => {
                 indent={entry.indent}
                 moveMode={active && moveMode}
                 renameValue={rv}
+                renameSelected={rs}
               />
             );
           })}

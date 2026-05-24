@@ -5,7 +5,37 @@
 # Usage:
 #   ./luna [name]              start or reattach session "name" (default: "luna")
 #   ./luna attach <name>       reattach to an existing session by name
+#   ./luna ls                  list all luna outer sessions and popup sessions
+#   ./luna kill <name>         kill a specific tmux session by name
 #   ./luna kill-all            wipe all luna popup sessions on the -L luna socket
+
+# Resolve the project directory from the script's own location, following any
+# symlinks. Works for `./luna`, `luna/luna`, absolute paths, aliases, and
+# symlinks in /usr/local/bin or ~/.local/bin.
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+while [ -L "$SCRIPT_PATH" ]; do
+  link="$(readlink "$SCRIPT_PATH")"
+  if [[ "$link" = /* ]]; then
+    SCRIPT_PATH="$link"
+  else
+    SCRIPT_PATH="$(dirname "$SCRIPT_PATH")/$link"
+  fi
+done
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+
+# `./luna ls` — list everything
+if [ "$1" = "ls" ]; then
+  echo "Outer sessions (default socket):"
+  if ! tmux ls 2>/dev/null | sed 's/^/  /'; then
+    echo "  (none)"
+  fi
+  echo ""
+  echo "Popup sessions (-L luna socket):"
+  if ! tmux -L luna ls 2>/dev/null | sed 's/^/  /'; then
+    echo "  (none)"
+  fi
+  exit 0
+fi
 
 # `./luna kill-all` — nuke all popup sessions
 if [ "$1" = "kill-all" ]; then
@@ -13,6 +43,20 @@ if [ "$1" = "kill-all" ]; then
     echo "All luna popup sessions killed."
   else
     echo "No luna popup sessions were running."
+  fi
+  exit 0
+fi
+
+# `./luna kill NAME` — kill a specific session by name
+if [ "$1" = "kill" ]; then
+  if [ -z "$2" ]; then
+    echo "Usage: ./luna kill <session-name>"
+    exit 1
+  fi
+  if tmux kill-session -t "$2" 2>/dev/null; then
+    echo "Killed session: $2"
+  else
+    echo "No session named: $2"
   fi
   exit 0
 fi
@@ -32,7 +76,11 @@ if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
   exec tmux attach -t "$SESSION_NAME"
 else
   # Create session detached, configure, then attach.
-  tmux new-session -d -s "$SESSION_NAME" -c "$(pwd)" "bun run src/index.tsx"
+  # The tmux session's cwd is the user's invocation dir (so popups inherit it).
+  # The bun command uses an absolute path to src/index.tsx so it works no matter
+  # where you invoked `./luna` from.
+  tmux new-session -d -s "$SESSION_NAME" -c "$(pwd)" \
+    "bun run '$SCRIPT_DIR/src/index.tsx'"
   tmux set-option -t "$SESSION_NAME" status off
   exec tmux attach -t "$SESSION_NAME"
 fi

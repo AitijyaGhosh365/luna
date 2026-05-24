@@ -99,6 +99,36 @@ To explicitly **reattach** to an existing session without risking creating a new
 ./luna attach global
 ```
 
+To **list every luna session** (outer named sessions and popup sessions on the `-L luna` socket, side-by-side):
+
+```bash
+./luna ls
+```
+
+Output looks like:
+
+```
+Outer sessions (default socket):
+  luna: 1 windows (created ...)
+  global: 1 windows (created ...) (attached)
+  work: 1 windows (created ...)
+
+Popup sessions (-L luna socket):
+  luna-mabc-xyz: 1 windows (created ...)
+  luna-mdef-uvw: 1 windows (created ...)
+```
+
+Use the names from the top group with `./luna attach <name>` or `./luna kill <name>`.
+
+To **kill a specific outer session** by name:
+
+```bash
+./luna kill global
+./luna kill work
+```
+
+Runs `tmux kill-session -t <name>` on the default socket. Use this to clean up named luna sessions you created with `./luna global` / `./luna work` / etc. without nuking everything.
+
 To **nuke all popup sessions** that luna has accumulated on its `-L luna` socket (handy when too many dead/orphan popups pile up — `tmux ls` doesn't show them, since they live on a different socket):
 
 ```bash
